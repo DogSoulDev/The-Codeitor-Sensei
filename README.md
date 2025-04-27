@@ -1,152 +1,177 @@
+# Autenticación TOTP "The Coder Sensei"
 
-# Sistema de Autenticación TOTP "The Coder Sensei"
+Este proyecto implementa un sistema de autenticación de dos factores (2FA) seguro utilizando contraseñas de un solo uso basadas en tiempo (TOTP). Genera códigos QR para una configuración sencilla con apps como Google Authenticator, Authy o similares.
 
-Este proyecto implementa un sistema de autenticación de dos factores (2FA) seguro utilizando contraseñas de un solo uso basadas en tiempo (TOTP). Genera códigos QR para una fácil configuración con aplicaciones de autenticación como Google Authenticator, Authy o similares.
+**Basado en el estándar RFC 6238:** [https://datatracker.ietf.org/doc/html/rfc6238](https://datatracker.ietf.org/doc/html/rfc6238)
 
-**Este script se basa en el estándar RFC 6238: [https://datatracker.ietf.org/doc/html/rfc6238](https://datatracker.ietf.org/doc/html/rfc6238)**
-
-**Este proyecto está disponible en: [https://github.com/DogSoulDev/The-Codeitor-Sensei](https://github.com/DogSoulDev/The-Codeitor-Sensei)**
+**Disponible en GitHub:** [https://github.com/DogSoulDev/The-Coder-Sensei](https://github.com/DogSoulDev/The-Coder-Sensei)
 
 ## Tabla de Contenidos
 
 -   [Características](#características)
--   [Requisitos Previos](#requisitos-previos)
+-   [Requisitos](#requisitos)
 -   [Instalación](#instalación)
 -   [Configuración](#configuración)
 -   [Uso](#uso)
--   [Explicación del Código](#explicación-del-código)
--   [Consideraciones de Seguridad](#consideraciones-de-seguridad)
--   [Contribución](#contribución)
+-   [Funcionamiento](#funcionamiento)
+-   [Seguridad](#seguridad)
+-   [Contribuir](#contribuir)
 -   [Licencia](#licencia)
--   [Solución de Problemas](#solución-de-problemas)
+-   [Ayuda](#ayuda)
 
 ## Características
 
--   **Generación Segura de TOTP:** Genera secretos TOTP seguros y códigos QR para la autenticación.
--   **Generación de Códigos QR:** Crea códigos QR que se pueden escanear con aplicaciones de autenticación.
--   **Verificación de Dependencias:** Verifica que todas las dependencias necesarias estén instaladas.
--   **Configuración del Entorno:** Utiliza variables de entorno para la configuración.
--   **Registro (Logging):** Registra los intentos de autenticación y los errores para la auditoría y la resolución de problemas.
--   **Limitación de Tasa (Rate Limiting):** Implementa la limitación de tasa para evitar ataques de fuerza bruta.
--   **Expiración del Código QR:** Los códigos QR expiran después de un cierto período de tiempo.
--   **Manejo Seguro de Secretos:** Borra la información confidencial de la memoria después de su uso.
+-   **TOTP Seguros:** Genera secretos y códigos QR para autenticación.
+-   **Códigos QR:** Compatibles con apps de autenticación.
+-   **Variables de Entorno:** Configuración sencilla.
+-   **Registro:** Guarda intentos de acceso y errores.
+-   **Límite de Intentos:** Evita ataques de fuerza bruta.
+-   **QR Expirables:** Mayor seguridad.
 
-## Requisitos Previos
+## Requisitos
 
-Antes de comenzar, asegúrate de tener lo siguiente instalado:
+Antes de empezar, necesitas:
 
--   **Python 3.6+:** Este proyecto requiere Python 3.6 o superior. Puedes descargarlo desde [python.org](https://www.python.org/downloads/).
--   **pip:** El instalador de paquetes de Python. Por lo general, viene con Python.
+-   **Python 3.6+:** Descárgalo desde [python.org](https://www.python.org/downloads/).
+-   **pip:** Instalador de paquetes de Python (viene con Python).
 
 ## Instalación
 
 1.  **Clona el repositorio:**
 
-    ```bash
-    git clone https://github.com/DogSoulDev/The-Codeitor-Sensei
-    cd The-Codeitor-Sensei
-    ```
+    Para clonar el repositorio, usa el siguiente comando en Bash:
 
-2.  **Instala las dependencias:**
+    git clone https://github.com/DogSoulDev/The-Coder-Sensei
+    cd The-Coder-Sensei
 
-    ```bash
+2.  **Crea y activa un entorno virtual:**
+
+    Para crear y activar un entorno virtual, usa los siguientes comandos en Bash:
+
+    python3 -m venv .venv
+    source .venv/bin/activate
+
+    ℹ️ Un entorno virtual aísla las dependencias del proyecto.
+
+    **Crear el entorno virtual:**
+
+    Para crear el entorno virtual, usa el siguiente comando en Bash:
+
+    python3 -m venv .venv
+
+    **Activar el entorno virtual:**
+
+    Para activar el entorno virtual, usa el siguiente comando en Bash:
+
+    source .venv/bin/activate
+
+    Verás `(.venv)` al inicio de la línea de comandos.
+
+3.  **Instala las dependencias:**
+
+    Para instalar las dependencias, usa el siguiente comando en Bash:
+
     pip install -r requirements.txt
-    ```
 
-    Este comando instalará todos los paquetes de Python necesarios que se enumeran en el archivo `requirements.txt`. Si encuentras algún problema, asegúrate de que tu `pip` esté actualizado:
+    Si hay problemas, actualiza `pip` con el siguiente comando en Bash:
 
-    ```bash
     pip install --upgrade pip
-    ```
 
-    El archivo `requirements.txt` contiene las siguientes dependencias:
+    El archivo `requirements.txt` contiene:
 
-    ```
     pyotp==2.9.0
-    qrcode==7.4.2
+    qrcode[pil]==7.4.2
     colorama==0.4.6
     python-dotenv==1.0.0
-    importlib_metadata==7.0.1
-    ```
+    Pillow==10.0.0
+
+4.  **Ejecutar el script:**
+
+    Asegúrate de estar dentro del entorno virtual.
+
+    **Desactivar el entorno virtual:**
+
+    Para desactivar el entorno virtual, usa el siguiente comando en Bash:
+
+    deactivate
+
+    Cuando termines de trabajar en el proyecto, puedes desactivar el entorno virtual. Esto devolverá tu terminal a su estado normal.
 
 ## Configuración
 
-El script utiliza variables de entorno para la configuración. Puedes establecer estas variables en tu shell o en un archivo `.env` en el directorio del proyecto. Aquí hay una lista de las opciones de configuración disponibles:
+El script usa variables de entorno. Puedes definirlas en tu terminal o en un archivo `.env`:
 
--   `QR_EXPIRATION`: El tiempo de expiración para los códigos QR en segundos (predeterminado: 300).
--   `MAX_ATTEMPTS`: El número máximo de intentos de autenticación permitidos (predeterminado: 5).
--   `ALLOWED_ISSUERS`: Una lista separada por comas de los emisores permitidos para el TOTP (predeterminado: "TheCodeitorSensei,KaliLinuxSec").
--   `QR_DIR`: El directorio donde se almacenan los códigos QR (predeterminado: "generated\_qrs").
--   `SECRET_ENV_VAR`: El nombre de la variable de entorno donde se almacena el secreto TOTP (predeterminado: "TOTP\_MASTER\_SECRET").
--   `RATE_LIMIT_TIME_WINDOW`: El intervalo de tiempo para la limitación de tasa en segundos (predeterminado: 60).
--   `RATE_LIMIT_MAX_ATTEMPTS`: El número máximo de intentos permitidos dentro del intervalo de tiempo de limitación de tasa (predeterminado: 3).
+-   `QR_EXPIRATION`: Tiempo de expiración del QR en segundos (por defecto: 300).
+-   `MAX_ATTEMPTS`: Número máximo de intentos de acceso (por defecto: 5).
+-   `ALLOWED_ISSUERS`: Lista de emisores permitidos (separados por comas).
+-   `QR_DIR`: Directorio para guardar los códigos QR (por defecto: "generated\_qrs").
+-   `TOTP_MASTER_SECRET`: Variable para guardar el secreto TOTP.
 
-Ejemplo de archivo `.env`:
+Ejemplo de `.env`:
 
+QR_EXPIRATION=300
+MAX_ATTEMPTS=5
+ALLOWED_ISSUERS=TheCoderSensei
+QR_DIR=generated_qrs
+TOTP_MASTER_SECRET=mi_secreto_super_seguro
 
-Para cargar estas variables, asegúrate de tener el paquete `python-dotenv` instalado (está en `requirements.txt`) y de llamar a `load_dotenv()` en tu script.
+Carga las variables con `load_dotenv()` (necesitas `python-dotenv`).
 
 ## Uso
 
 1.  **Ejecuta el script:**
 
-    ```bash
+    Para ejecutar el script, usa el siguiente comando en Bash:
+
     python coder.py
-    ```
 
-2.  **Sigue las indicaciones:**
+2.  **Sigue las instrucciones:**
 
-    -   El script generará un código QR y mostrará un URI.
-    -   Escanea el código QR con tu aplicación de autenticación (por ejemplo, Google Authenticator).
-    -   Ingresa el código TOTP de la aplicación de autenticación cuando se te solicite.
+    -   El script genera un código QR.
+    -   Escanea el QR con tu app de autenticación.
+    -   Introduce el código TOTP cuando se te pida.
 
-## Explicación del Código
+## Funcionamiento
 
-Aquí hay un resumen de las partes principales del código:
+El script hace lo siguiente:
 
--   **Importaciones:** El script importa bibliotecas necesarias como `pyotp` (para la generación de TOTP), `qrcode` (para la generación de códigos QR), `colorama` (para la salida de terminal en color) y otras.
--   **Configuración:** La clase `Config` lee los valores de configuración de las variables de entorno. Esto facilita el cambio de la configuración sin modificar el código.
--   **Registro (Logging):** El script utiliza el módulo `logging` para registrar eventos, errores e intentos de autenticación. Esto es útil para la depuración y la auditoría.
--   **`check_dependencies()`:** Esta función verifica que todos los paquetes de Python requeridos estén instalados. Si falta alguno, imprime instrucciones sobre cómo instalarlos usando `pip`.
--   **`secure_filename()`:** Esta función genera un nombre de archivo seguro para la imagen del código QR utilizando un hash del secreto.
--   **`setup_environment()`:** Esta función crea el directorio del código QR si no existe y establece los permisos adecuados.
--   **`generate_secret()`:** Genera una clave secreta segura utilizando el módulo `secrets`.
--   **`generar_qr_totp()`:** Esta función genera el código QR para el secreto TOTP. Toma el emisor y el nombre de la cuenta como argumentos y devuelve el secreto, la ruta del código QR y el URI.
--   **`validar_totp()`:** Esta función valida el código TOTP ingresado por el usuario contra el secreto.
--   **`limpiar_qrs_antiguos()`:** Esta función elimina los códigos QR antiguos que han expirado.
--   **`is_rate_limited()`:** Esta función verifica si una dirección IP está limitada en función de la cantidad de intentos fallidos dentro de un cierto período de tiempo.
--   **`authenticate_totp()`:** Esta es la función principal de autenticación. Genera el código QR, le pide al usuario que lo escanee y luego solicita el código TOTP. También maneja la limitación de tasa y la expiración del código QR.
--   **`if __name__ == "__main__":`:** Este es el punto de entrada principal del script. Llama a la función `check_dependencies()` para verificar que todas las dependencias estén instaladas, carga las variables de entorno y luego llama a la función `authenticate_totp()` para iniciar el proceso de autenticación.
+-   Importa librerías como `pyotp`, `qrcode`, `colorama`, etc.
+-   Lee la configuración desde variables de entorno.
+-   Verifica que las dependencias estén instaladas.
+-   Genera un secreto con `generate_secret()`.
+-   Crea el código QR con `generar_qr_totp()`.
+-   Valida el código TOTP con `validar_totp()`.
+-   Gestiona el límite de intentos y la expiración del QR.
+-   Autentica al usuario con `authenticate_totp()`.
 
-## Consideraciones de Seguridad
+## Seguridad
 
--   **Variables de Entorno:** Ten cuidado con cómo almacenas y administras las variables de entorno, especialmente en entornos de producción. Evita confirmar archivos `.env` al control de versiones.
--   **Almacenamiento de Códigos QR:** Los códigos QR se almacenan en un directorio con permisos restringidos. Asegúrate de que este directorio no sea accesible para usuarios no autorizados.
--   **Limitación de Tasa:** La limitación de tasa se implementa para evitar ataques de fuerza bruta. Ajusta las opciones de configuración `RATE_LIMIT_TIME_WINDOW` y `RATE_LIMIT_MAX_ATTEMPTS` para que se adapten a tus necesidades.
--   **Manejo de Secretos:** El script borra el secreto TOTP de la memoria después de su uso para evitar que se acceda a él más tarde. Sin embargo, considera utilizar métodos más seguros para almacenar secretos, como módulos de seguridad de hardware (HSM) o servicios de administración de secretos.
+-   **Variables de Entorno:** No subas el archivo `.env` a Git.
+-   **Almacenamiento QR:** Protege el directorio de los códigos QR.
+-   **Límite de Intentos:** Ajusta los parámetros para evitar ataques.
+-   **Manejo de Secretos:** Considera métodos más seguros para guardar secretos (HSM, etc.).
 
-## Contribución
+## Contribuir
 
-¡Las contribuciones son bienvenidas! Si encuentras un error o tienes una idea para una nueva función, abre un problema o envía una solicitud de extracción.
+¡Las contribuciones son bienvenidas! Abre un "issue" o envía un "pull request".
 
 ## Licencia
 
-Este proyecto está licenciado bajo la [Licencia MIT](LICENSE).
+Este proyecto usa la [MIT License](LICENSE).
 
-## Solución de Problemas
+## Ayuda
 
--   **Problemas con `pip`:** Si encuentras errores durante la instalación de dependencias, intenta actualizar `pip` primero:
+### Problemas con `pip`
 
-    ```bash
-    python -m pip install --upgrade pip
-    ```
+Para actualizar `pip` y luego instalar las dependencias, usa los siguientes comandos en Bash:
 
-    Luego, intenta instalar las dependencias nuevamente:
+python -m pip install --upgrade pip
+pip install -r requirements.txt
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+### Problemas con la app de autenticación
 
--   **Problemas con la aplicación de autenticación:** Si el código TOTP no funciona, asegúrate de que el reloj de tu sistema esté sincronizado. Algunas aplicaciones de autenticación también tienen opciones para corregir la desviación del tiempo.
+Sincroniza el reloj de tu sistema.
 
--   **Problemas con las variables de entorno:** Verifica que todas las variables de entorno necesarias estén configuradas correctamente. Utiliza `printenv` en tu terminal para listar todas las variables de entorno.
+### Problemas con las variables de entorno
+
+Verifica que estén definidas correctamente.
